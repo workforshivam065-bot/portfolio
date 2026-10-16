@@ -82,12 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const typingElement = document.getElementById('typewriter-text');
   const roles = [
     'B.Tech CSE Student',
-    'Aspiring Software Engineer',
-    'Python Developer',
-    'Java Developer',
-    'C++ Programmer',
-    'Web Developer',
-    'Computer Science Student'
+    'AI & Full-Stack Developer',
+    'RAG & Gemini API Developer',
+    'Next.js & React Specialist',
+    'Operational Head @ Flux',
+    'Aspiring Software Engineer'
   ];
   let roleIndex = 0;
   let charIndex = 0;

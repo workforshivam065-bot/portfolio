@@ -433,14 +433,49 @@ body.light-theme .moon-icon {
   font-size: 1.15rem;
   color: var(--text-secondary);
   max-width: 600px;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+.hero-contact-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2.2rem;
+}
+
+.contact-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 50px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: all var(--transition-speed) var(--transition-bezier);
+  backdrop-filter: var(--glass-blur);
+}
+
+.contact-chip svg {
+  width: 15px;
+  height: 15px;
+  fill: var(--primary-accent);
+}
+
+.contact-chip:hover {
+  border-color: var(--primary-accent);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px var(--accent-glow);
 }
 
 .hero-actions {
   display: flex;
   gap: 1.5rem;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .hero-socials {
@@ -701,6 +736,121 @@ body.light-theme .moon-icon {
 
 /* 
   =========================================
+  LEADERSHIP & EXPERIENCE SECTION
+  =========================================
+*/
+
+.experience-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.experience-card {
+  padding: 2.2rem 2.5rem;
+  position: relative;
+  border-left: 4px solid var(--primary-accent);
+  transition: all var(--transition-speed) var(--transition-bezier);
+}
+
+.experience-card:hover {
+  transform: translateX(8px);
+  border-left-color: var(--secondary-accent);
+  border-color: var(--border-hover);
+}
+
+.experience-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.experience-role-group h3 {
+  font-size: 1.35rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.experience-org {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--primary-accent);
+}
+
+.experience-date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  background: var(--accent-glow);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--primary-accent);
+}
+
+.experience-date-badge svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.experience-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.experience-bullets li {
+  position: relative;
+  padding-left: 1.6rem;
+  color: var(--text-secondary);
+  font-size: 0.96rem;
+  line-height: 1.65;
+}
+
+.experience-bullets li::before {
+  content: '▹';
+  position: absolute;
+  left: 0;
+  color: var(--primary-accent);
+  font-weight: 700;
+  font-size: 1.15rem;
+  line-height: 1.4;
+}
+
+.experience-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.experience-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: 4px;
+}
+
+/* 
+  =========================================
   PROJECTS SECTION
   =========================================
 */
@@ -709,6 +859,74 @@ body.light-theme .moon-icon {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 2.5rem;
+}
+
+.project-card.project-featured {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  border: 1px solid var(--border-hover);
+  box-shadow: 0 12px 36px var(--accent-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card.project-featured .project-card-header {
+  height: 100%;
+  min-height: 280px;
+  border-bottom: none;
+  border-right: 1px solid var(--border-color);
+  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.12) 0%, var(--bg-secondary) 100%);
+}
+
+.featured-flag-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  background: var(--accent-gradient);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 50px;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+}
+
+.featured-flag-badge svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.featured-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 1rem 0 1.25rem 0;
+}
+
+.featured-bullets li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.featured-bullets li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--primary-accent);
+  font-weight: 800;
+  font-size: 0.95rem;
 }
 
 .project-card {
@@ -827,7 +1045,7 @@ body.light-theme .moon-icon {
 
 /* 
   =========================================
-  ACHIEVEMENTS SECTION
+  ACHIEVEMENTS & CO-CURRICULAR SECTION
   =========================================
 */
 
@@ -845,23 +1063,51 @@ body.light-theme .moon-icon {
   text-align: left;
   position: relative;
   overflow: hidden;
+  height: 100%;
 }
 
 .achievement-icon {
   font-size: 3rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 
 .achievement-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.8rem;
+  font-size: 1.35rem;
+  margin-bottom: 0.6rem;
+  color: var(--text-primary);
 }
 
 .achievement-card p {
   font-size: 0.95rem;
   color: var(--text-secondary);
+  margin-bottom: 1.2rem;
+  line-height: 1.6;
+}
+
+.achievement-card-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.achievement-card-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.achievement-card-list li::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  color: var(--primary-accent);
+  font-size: 0.85rem;
 }
 
 .achievement-badge {
@@ -871,8 +1117,9 @@ body.light-theme .moon-icon {
   letter-spacing: 0.05em;
   color: var(--secondary-accent);
   background-color: var(--accent-glow);
-  padding: 0.3rem 0.8rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 50px;
+  margin-top: auto;
 }
 
 /* 
@@ -881,60 +1128,128 @@ body.light-theme .moon-icon {
   =========================================
 */
 
-.education-card {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 3rem;
+.education-grid {
   display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.education-card-dual {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-speed) var(--transition-bezier);
+}
+
+.education-card-dual:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-hover);
+  box-shadow: 0 12px 30px var(--accent-glow);
+}
+
+.edu-badge {
+  display: inline-flex;
   align-items: center;
-}
-
-.education-side {
-  text-align: center;
-  border-right: 1px solid var(--border-color);
-  padding-right: 3rem;
-}
-
-.education-icon {
-  font-size: 3rem;
+  gap: 0.4rem;
+  align-self: flex-start;
+  padding: 0.3rem 0.85rem;
+  background: var(--accent-glow);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: var(--primary-accent);
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
-.education-icon svg {
-  width: 50px;
-  height: 50px;
-  fill: currentColor;
+.education-card-dual h3 {
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+  line-height: 1.35;
 }
 
-.education-side h3 {
-  font-size: 1.5rem;
+.education-card-dual .edu-institution {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--primary-accent);
   margin-bottom: 0.5rem;
 }
 
-.education-duration {
-  font-size: 0.95rem;
-  color: var(--primary-accent);
+.education-card-dual .edu-location-date {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cgpa-highlight-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.1rem 1.3rem;
+  margin-bottom: 1.4rem;
+}
+
+.cgpa-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.cgpa-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
-.education-details h4 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  color: var(--text-primary);
+.cgpa-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.education-details p {
+.semester-chips {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.sem-chip {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.65rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
   color: var(--text-secondary);
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
+}
+
+.education-card-dual p {
+  color: var(--text-secondary);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.education-coursework {
+  margin-top: auto;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-color);
 }
 
 .education-coursework h5 {
-  font-size: 1rem;
-  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
   color: var(--text-primary);
   font-weight: 600;
 }
@@ -942,12 +1257,12 @@ body.light-theme .moon-icon {
 .course-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
 .course-tag {
   font-size: 0.8rem;
-  padding: 0.3rem 0.8rem;
+  padding: 0.25rem 0.7rem;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
@@ -1316,8 +1631,23 @@ body.light-theme .moon-icon {
   .hero-actions {
     justify-content: center;
   }
+  .hero-contact-chips {
+    justify-content: center;
+  }
   .hero-image-wrapper {
     order: -1;
+  }
+  .project-card.project-featured {
+    grid-template-columns: 1fr;
+  }
+  .project-card.project-featured .project-card-header {
+    height: 220px;
+    min-height: 220px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .experience-card {
+    padding: 1.8rem;
   }
   .about-grid {
     grid-template-columns: 1fr;
