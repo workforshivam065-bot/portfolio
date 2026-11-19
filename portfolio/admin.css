@@ -358,6 +358,8 @@ button, input, select, textarea {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .auth-header h2 {
