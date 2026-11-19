@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Dashboard &amp; CMS | Shivam Singh Portfolio</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Supabase JS Client (v2 official CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Supabase Config Helper -->
+  <script src="supabase-config.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- ========================================================================= -->
+  <!-- 1. AUTH SCREEN (Displayed when user is not logged in) -->
+  <!-- ========================================================================= -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-card glass-card">
+      <div class="auth-header">
+        <div class="auth-logo">&lt;Shivam.Singh /&gt;</div>
+        <h2>Portfolio CMS Admin</h2>
+        <p>Sign in with your authorized admin account to manage your portfolio.</p>
+      </div>
+
+      <!-- Supabase Connection Status Pill -->
+      <div id="auth-supabase-status" class="status-pill status-checking">
+        <span class="status-dot"></span>
+        <span class="status-text">Checking Supabase connection...</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="admin-login-form" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="login-email" class="form-label">Admin Email</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <input type="email" id="login-email" class="form-input" placeholder="admin@example.com" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            <input type="password" id="login-password" class="form-input" placeholder="••••••••••••" required autocomplete="current-password">
+            <button type="button" id="toggle-password-btn" class="input-action-btn" title="Toggle password visibility">
+              <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="login-error-msg" class="alert-box alert-error" style="display: none;"></div>
+
+        <button type="submit" id="login-submit-btn" class="btn btn-primary btn-block">
+          <span>Sign In to Dashboard</span>
+          <svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-7.85-1.42 1.42 5.43 5.43H5v2z"/></svg>
+        </button>
+      </form>
+
+      <!-- Quick Supabase Credentials Modal Trigger -->
+      <div class="auth-footer">
+        <button type="button" id="open-config-modal-btn" class="btn-text">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          Configure Supabase Project Keys
+        </button>
+        <a href="index.html" class="btn-text" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+          View Public Portfolio
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MAIN ADMIN DASHBOARD APPLICATION (Displayed when logged in) -->
+  <!-- ========================================================================= -->
+  <div id="admin-app" class="admin-app" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-brand">
+        <a href="index.html" target="_blank" class="brand-link" title="Open Public Portfolio">
+          <span class="brand-badge">PRO</span>
+          <span class="brand-name">&lt;Shivam.S /&gt;</span>
+        </a>
+        <button id="sidebar-close-btn" class="sidebar-toggle-btn mobile-only" aria-label="Close sidebar">✕</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">CORE</div>
+        <button class="nav-item active" data-tab="overview">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          <span>Dashboard Overview</span>
+        </button>
+        <button class="nav-item" data-tab="profile">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span>Personal Info &amp; Bio</span>
+        </button>
+
+        <div class="nav-section-title">PORTFOLIO CMS</div>
+        <button class="nav-item" data-tab="skills">
+          <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+          <span>Technical Skills</span>
+          <span class="nav-counter" id="badge-skills-count">0</span>
+        </button>
+        <button class="nav-item" data-tab="projects">
+          <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+          <span>Projects</span>
+          <span class="nav-counter" id="badge-projects-count">0</span>
+        </button>
+        <button class="nav-item" data-tab="experience">
+          <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+          <span>Experience &amp; Roles</span>
+        </button>
+        <button class="nav-item" data-tab="education">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM3.8 9L12 4.53 20.2 9 12 13.47 3.8 9z"/></svg>
+          <span>Education</span>
+        </button>
+        <button class="nav-item" data-tab="achievements">
+          <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+          <span>Achievements</span>
+        </button>
+        <button class="nav-item" data-tab="coding_profiles">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          <span>Coding Profiles</span>
+        </button>
+        <button class="nav-item" data-tab="resume">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          <span>Resume Management</span>
+        </button>
+
+        <div class="nav-section-title">SYSTEM</div>
+        <button class="nav-item" data-tab="settings">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          <span>Settings &amp; Database</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="current-user-initial">A</div>
+          <div class="user-details">
+            <span class="user-name" id="current-user-email">Admin</span>
+            <span class="user-role">Authorized Editor</span>
+          </div>
+        </div>
+        <button id="admin-logout-btn" class="logout-btn" title="Sign out of Admin Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+      <!-- Top Navigation Bar -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" aria-label="Toggle sidebar">
+            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+          </button>
+          <div class="breadcrumb" id="admin-breadcrumb">
+            <span class="breadcrumb-item">Admin</span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current" id="current-tab-title">Dashboard Overview</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Live Link Button -->
+          <a href="index.html" target="_blank" class="btn btn-outline btn-sm">
+            <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+            <span>Live Portfolio</span>
+          </a>
+
+          <!-- Dark/Light Theme Toggle -->
+          <button id="admin-theme-toggle" class="theme-btn" title="Toggle Admin Theme">
+            <svg class="sun-icon" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41zm-12.37 12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41z"/></svg>
+            <svg class="moon-icon" viewBox="0 0 24 24"><path d="M12.3 22h-.1c-5.5 0-10-4.5-10-10C2.2 6.8 6.3 2.5 11.5 2.1c.5-.04.9.3 1 .8.1.5-.2.9-.6 1.1-3.6 1.4-5.8 4.8-5.8 8.6 0 4.1 3.4 7.5 7.5 7.5 3.7 0 7.1-2.2 8.5-5.6.2-.4.7-.7 1.1-.6.5.1.8.5.8 1-.6 5.1-4.8 9.1-9.9 9.1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <div class="admin-content-container">
+
+        <!-- ================================================================= -->
+        <!-- TAB 1: DASHBOARD OVERVIEW -->
+        <!-- ================================================================= -->
+        <section id="tab-overview" class="tab-pane active">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Dashboard Overview</h1>
+              <p class="pane-subtitle">Real-time statistics and summary of your portfolio database.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-secondary btn-sm" id="btn-refresh-all">
+                <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                <span>Refresh Data</span>
+              </button>
+              <button class="btn btn-primary btn-sm" id="btn-seed-supabase">
+                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                <span>Sync Initial Data to Supabase</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stats Cards Grid -->
+          <div class="stats-grid">
+            <div class="stat-card glass-card">
+              <div class="stat-icon stat-icon-blue">
+                <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Total Projects</span>
+                <span class="stat-value" id="stat-projects-count">0</span>
+                <span class="stat-hint" id="stat-projects-featured">0 Featured</span>
+              </div>
+            </div>
+
+            <div class="stat-card glass-card">
+              <div class="stat-icon stat-icon-purple">
+                <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Technical Skills</span>
+                <span class="stat-value" id="stat-skills-count">0</span>
+                <span class="stat-hint" id="stat-skills-categories">0 Categories</span>
+              </div>
+            </div>
+
+            <div class="stat-card glass-card">
+              <div class="stat-icon stat-icon-emerald">
+                <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2z"/></svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Achievements</span>
+                <span class="stat-value" id="stat-achievements-count">0</span>
+                <span class="stat-hint">Honors &amp; Hackathons</span>
+              </div>
+            </div>
+
+            <div class="stat-card glass-card">
+              <div class="stat-icon stat-icon-amber">
+                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Experience Roles</span>
+                <span class="stat-value" id="stat-experience-count">0</span>
+                <span class="stat-hint">Leadership &amp; Governance</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action & Resume Status Grid -->
+          <div class="dashboard-row">
+            <!-- Resume Status Banner -->
+            <div class="card glass-card dash-card">
+              <div class="card-header">
+                <h3>Current Resume Status</h3>
+                <button class="btn btn-outline btn-sm" onclick="AdminApp.switchTab('resume')">Manage Resume</button>
+              </div>
+              <div class="card-body">
+                <div class="resume-overview-box">
+                  <div class="resume-file-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                  </div>
+                  <div class="resume-details">
+                    <h4 id="overview-resume-name">Shivam_Singh_Resume.pdf</h4>
+                    <p class="text-muted" id="overview-resume-date">Last Uploaded: Available on Google Drive</p>
+                    <div class="resume-actions-row">
+                      <a id="overview-resume-link" href="#" target="_blank" class="btn btn-sm btn-primary">Preview Current Resume</a>
+                      <button class="btn btn-sm btn-secondary" onclick="AdminApp.switchTab('resume')">Replace Resume</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Database Synchronization Status -->
+            <div class="card glass-card dash-card">
+              <div class="card-header">
+                <h3>Live Database Connection</h3>
+                <span class="badge badge-success" id="overview-db-status">Active</span>
+              </div>
+              <div class="card-body">
+                <p class="text-secondary" style="margin-bottom: 1rem;">
+                  Your public portfolio automatically syncs changes made in this dashboard in real-time.
+                </p>
+                <div class="db-meta-list">
+                  <div class="db-meta-item">
+                    <span class="meta-label">Supabase URL:</span>
+                    <span class="meta-val font-mono" id="overview-supabase-url">Checking...</span>
+                  </div>
+                  <div class="db-meta-item">
+                    <span class="meta-label">Database Engine:</span>
+                    <span class="meta-val">PostgreSQL with Row Level Security (RLS)</span>
+                  </div>
+                  <div class="db-meta-item">
+                    <span class="meta-label">Storage Bucket:</span>
+                    <span class="meta-val font-mono">portfolio-assets</span>
+                  </div>
+                  <div class="db-meta-item">
+                    <span class="meta-label">Last Synchronized:</span>
+                    <span class="meta-val" id="overview-last-sync">Just now</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 2: PERSONAL INFO & ABOUT ME -->
+        <!-- ================================================================= -->
+        <section id="tab-profile" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Personal Info &amp; About Me</h1>
+              <p class="pane-subtitle">Update your public profile, hero titles, contact information, and biography.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-primary" id="btn-save-profile">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                <span>Save Profile Changes</span>
+              </button>
+            </div>
+          </div>
+
+          <form id="profile-form" class="admin-form-grid">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h3>Hero Identity &amp; Titles</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-label" for="prof-name">Full Name</label>
+                  <input type="text" id="prof-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prof-title">Professional Title</label>
+                  <input type="text" id="prof-title" class="form-input" placeholder="e.g. B.Tech CSE Student | AI & Full-Stack Developer" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prof-tagline">Short Hero Introduction</label>
+                  <textarea id="prof-tagline" class="form-input" rows="3" placeholder="Short intro displayed in the hero section"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prof-img">Profile Image (Path or URL)</label>
+                  <input type="text" id="prof-img" class="form-input" placeholder="e.g. profile.png or https://...">
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass-card">
+              <div class="card-header">
+                <h3>Contact &amp; Location Information</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-label" for="prof-email">Email Address</label>
+                  <input type="email" id="prof-email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prof-phone">Phone Number</label>
+                  <input type="tel" id="prof-phone" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prof-location">Location / City</label>
+                  <input type="text" id="prof-location" class="form-input" placeholder="e.g. Lucknow, Uttar Pradesh">
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass-card form-grid-full">
+              <div class="card-header">
+                <h3>About Me Narrative (3 Paragraphs)</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-label" for="prof-bio1">Paragraph 1: Technical Focus &amp; AI Engineering</label>
+                  <textarea id="prof-bio1" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prof-bio2">Paragraph 2: Leadership, Hackathons &amp; Campus Operations</label>
+                  <textarea id="prof-bio2" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prof-bio3">Paragraph 3: Academic Standing &amp; Current Goals</label>
+                  <textarea id="prof-bio3" class="form-input" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 3: TECHNICAL SKILLS (CRUD) -->
+        <!-- ================================================================= -->
+        <section id="tab-skills" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Manage Technical Skills</h1>
+              <p class="pane-subtitle">Add, edit, reorganize, or delete technical skills across categories.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-primary" id="btn-add-skill-modal">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Add New Skill</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Skills Category Filter Tabs -->
+          <div class="filter-tabs" id="skills-filter-tabs">
+            <button class="filter-tab active" data-category="ALL">All Skills</button>
+            <button class="filter-tab" data-category="Programming Languages">Programming Languages</button>
+            <button class="filter-tab" data-category="Web Technologies">Web Technologies</button>
+            <button class="filter-tab" data-category="AI & Core Frameworks">AI &amp; Core</button>
+            <button class="filter-tab" data-category="Databases & Tools">Databases &amp; Tools</button>
+          </div>
+
+          <!-- Skills Table Container -->
+          <div class="card glass-card">
+            <div class="table-responsive">
+              <table class="admin-table" id="skills-table">
+                <thead>
+                  <tr>
+                    <th>Skill Name</th>
+                    <th>Category</th>
+                    <th>Proficiency</th>
+                    <th>Display Order</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="skills-table-body">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 4: FEATURED & ALL PROJECTS (CRUD) -->
+        <!-- ================================================================= -->
+        <section id="tab-projects" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Manage Projects</h1>
+              <p class="pane-subtitle">Create, update, or remove projects, live demo links, and GitHub repositories.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-primary" id="btn-add-project-modal">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Add New Project</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="projects-admin-grid" id="projects-admin-cards">
+            <!-- Project Cards rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 5: EXPERIENCE & LEADERSHIP (CRUD) -->
+        <!-- ================================================================= -->
+        <section id="tab-experience" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Experience &amp; Leadership</h1>
+              <p class="pane-subtitle">Manage leadership positions, campus responsibilities, and community roles.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-primary" id="btn-add-experience-modal">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Add Experience Entry</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="experience-admin-list" id="experience-admin-list">
+            <!-- Experience entries rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 6: EDUCATION (CRUD) -->
+        <!-- ================================================================= -->
+        <section id="tab-education" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Education Qualifications</h1>
+              <p class="pane-subtitle">Manage degree details, institutional records, CGPA scores, and coursework.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-primary" id="btn-add-education-modal">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Add Education</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="education-admin-list" id="education-admin-list">
+            <!-- Education items rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 7: ACHIEVEMENTS & CO-CURRICULAR (CRUD) -->
+        <!-- ================================================================= -->
+        <section id="tab-achievements" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Achievements &amp; Co-Curricular</h1>
+              <p class="pane-subtitle">Manage athletic honors, public speaking awards, hackathons, and certifications.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-primary" id="btn-add-achievement-modal">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Add Achievement</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="achievements-admin-list" id="achievements-admin-list">
+            <!-- Achievement cards rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 8: CODING PROFILES -->
+        <!-- ================================================================= -->
+        <section id="tab-coding_profiles" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Coding Profiles &amp; Networks</h1>
+              <p class="pane-subtitle">Manage links to GitHub, LinkedIn, LeetCode, HackerRank, and other platforms.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-primary" id="btn-add-profile-modal">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Add Profile Link</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="card glass-card">
+            <div class="table-responsive">
+              <table class="admin-table" id="profiles-table">
+                <thead>
+                  <tr>
+                    <th>Platform</th>
+                    <th>Username</th>
+                    <th>Profile URL</th>
+                    <th>Display Order</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="profiles-table-body">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 9: RESUME MANAGEMENT -->
+        <!-- ================================================================= -->
+        <section id="tab-resume" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Resume Management</h1>
+              <p class="pane-subtitle">Upload a PDF resume to Supabase Storage or link an external Google Drive URL.</p>
+            </div>
+          </div>
+
+          <div class="resume-manager-grid">
+            <!-- Upload Box -->
+            <div class="card glass-card">
+              <div class="card-header">
+                <h3>Upload New PDF Resume</h3>
+              </div>
+              <div class="card-body">
+                <div class="file-dropzone" id="resume-dropzone">
+                  <svg class="dropzone-icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                  <h4>Drag and drop your PDF resume here</h4>
+                  <p class="text-muted">Supports .pdf documents up to 10MB</p>
+                  <label for="resume-file-input" class="btn btn-outline btn-sm" style="margin-top: 1rem; cursor: pointer;">
+                    Browse File on Device
+                  </label>
+                  <input type="file" id="resume-file-input" accept=".pdf" style="display: none;">
+                </div>
+
+                <div id="resume-upload-progress" style="display: none; margin-top: 1rem;">
+                  <div class="progress-bar-bg">
+                    <div id="resume-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                  </div>
+                  <span id="resume-upload-status" class="text-muted font-sm" style="margin-top: 0.5rem; display: block;">Uploading...</span>
+                </div>
+
+                <div class="divider-text">OR ENTER DIRECT URL</div>
+
+                <div class="form-group">
+                  <label class="form-label" for="manual-resume-url">External Resume Link (e.g. Google Drive)</label>
+                  <input type="url" id="manual-resume-url" class="form-input" placeholder="https://drive.google.com/file/d/...">
+                  <span class="form-hint">Visitors clicking "View Resume" on your public site will open this link.</span>
+                </div>
+                <button type="button" class="btn btn-primary" id="btn-save-manual-resume">Save Resume URL</button>
+              </div>
+            </div>
+
+            <!-- Current Active Resume Card -->
+            <div class="card glass-card">
+              <div class="card-header">
+                <h3>Live Resume Details</h3>
+                <span class="badge badge-success">Active on Public Portfolio</span>
+              </div>
+              <div class="card-body">
+                <div class="active-resume-card">
+                  <div class="active-resume-badge">PDF</div>
+                  <div class="active-resume-info">
+                    <h4 id="active-resume-title">Current Resume Document</h4>
+                    <p class="text-muted" id="active-resume-date">Updated: Checking...</p>
+                    <p class="text-muted font-mono font-sm" id="active-resume-target" style="word-break: break-all; margin-top: 0.5rem;">URL</p>
+                  </div>
+                </div>
+
+                <div class="resume-live-preview-box">
+                  <iframe id="resume-preview-frame" src="" title="Resume Document Preview" style="width: 100%; height: 350px; border: 1px solid var(--border-color); border-radius: 8px; display: none;"></iframe>
+                  <div id="resume-no-preview" class="no-preview-placeholder">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    <p>Click below to test the live resume link</p>
+                    <a id="btn-view-live-resume" href="#" target="_blank" class="btn btn-primary btn-sm">Open Resume in New Tab</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 10: SETTINGS & DATABASE TOOLS -->
+        <!-- ================================================================= -->
+        <section id="tab-settings" class="tab-pane">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Settings &amp; Database Configuration</h1>
+              <p class="pane-subtitle">Configure Supabase connection keys, test connectivity, and export/import portfolio backups.</p>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <!-- Supabase Config Card -->
+            <div class="card glass-card">
+              <div class="card-header">
+                <h3>Supabase Connection Settings</h3>
+              </div>
+              <div class="card-body">
+                <form id="settings-supabase-form">
+                  <div class="form-group">
+                    <label class="form-label" for="setting-supabase-url">Supabase Project URL</label>
+                    <input type="url" id="setting-supabase-url" class="form-input font-mono" placeholder="https://xyz.supabase.co" required>
+                    <span class="form-hint">Found in your Supabase Project Settings &gt; API &gt; Project URL.</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="setting-supabase-key">Supabase Anon Key (Public)</label>
+                    <input type="text" id="setting-supabase-key" class="form-input font-mono" placeholder="eyJhbGciOi..." required>
+                    <span class="form-hint">Found in your Supabase Project Settings &gt; API &gt; Project API keys &gt; 'anon public'.</span>
+                  </div>
+
+                  <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">Save Supabase Keys</button>
+                    <button type="button" class="btn btn-outline" id="btn-test-settings-connection">Test Connection</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Backup & Restore Card -->
+            <div class="card glass-card">
+              <div class="card-header">
+                <h3>Backup &amp; Migration Tools</h3>
+              </div>
+              <div class="card-body">
+                <p class="text-secondary" style="margin-bottom: 1.5rem;">
+                  Export all your portfolio data (projects, skills, achievements, bio) to a standalone JSON file, or restore from a previous backup.
+                </p>
+
+                <div class="btn-group-vertical">
+                  <button type="button" class="btn btn-secondary btn-block" id="btn-export-backup">
+                    <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                    <span>Export Full Portfolio Backup (JSON)</span>
+                  </button>
+
+                  <label for="import-backup-file" class="btn btn-outline btn-block" style="cursor: pointer; text-align: center;">
+                    <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                    <span>Restore / Import Data from JSON</span>
+                  </label>
+                  <input type="file" id="import-backup-file" accept=".json" style="display: none;">
+                </div>
+
+                <div class="alert-box alert-info" style="margin-top: 1.5rem;">
+                  <strong>Database Setup Script:</strong> Download or copy the <a href="supabase_schema.sql" target="_blank" style="color: inherit; text-decoration: underline;">supabase_schema.sql</a> script to set up all tables and RLS security in Supabase.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS SYSTEM (Add/Edit Skill, Project, Experience, Delete Confirmation) -->
+  <!-- ========================================================================= -->
+
+  <!-- Skill Modal -->
+  <div id="skill-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3 id="skill-modal-title">Add New Skill</h3>
+        <button class="modal-close-btn" data-close-modal="skill-modal">&times;</button>
+      </div>
+      <form id="skill-modal-form">
+        <input type="hidden" id="modal-skill-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="modal-skill-name">Skill Name</label>
+            <input type="text" id="modal-skill-name" class="form-input" placeholder="e.g. Next.js, Python, PostgreSQL" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-skill-category">Category</label>
+            <select id="modal-skill-category" class="form-input" required>
+              <option value="Programming Languages">Programming Languages</option>
+              <option value="Web Technologies">Web Technologies</option>
+              <option value="AI & Core Frameworks">AI &amp; Core Frameworks</option>
+              <option value="Databases & Tools">Databases &amp; Tools</option>
+              <option value="Other Technologies">Other Technologies</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">
+              <span>Proficiency Level:</span>
+              <strong id="modal-skill-level-display">85%</strong>
+            </label>
+            <input type="range" id="modal-skill-level" min="10" max="100" value="85" class="form-range" oninput="document.getElementById('modal-skill-level-display').innerText = this.value + '%'">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-skill-order">Display Order Priority</label>
+            <input type="number" id="modal-skill-order" class="form-input" value="1" min="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="skill-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-skill">Save Skill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Project Modal -->
+  <div id="project-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card modal-lg glass-card">
+      <div class="modal-header">
+        <h3 id="project-modal-title">Add New Project</h3>
+        <button class="modal-close-btn" data-close-modal="project-modal">&times;</button>
+      </div>
+      <form id="project-modal-form">
+        <input type="hidden" id="modal-project-id">
+        <div class="modal-body modal-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="modal-project-title">Project Title</label>
+            <input type="text" id="modal-project-title" class="form-input" placeholder="e.g. NeuroTwin" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-project-subtitle">Subtitle / Category Tagline</label>
+            <input type="text" id="modal-project-subtitle" class="form-input" placeholder="e.g. Flagship AI Platform">
+          </div>
+
+          <div class="form-group form-grid-full">
+            <label class="form-label" for="modal-project-desc">Short Overview Description</label>
+            <textarea id="modal-project-desc" class="form-input" rows="2" placeholder="Brief summary displayed on project card" required></textarea>
+          </div>
+
+          <div class="form-group form-grid-full">
+            <label class="form-label" for="modal-project-bullets">Key Implementation Bullets (1 per line)</label>
+            <textarea id="modal-project-bullets" class="form-input" rows="3" placeholder="Bullet points detailing technologies and impact"></textarea>
+          </div>
+
+          <div class="form-group form-grid-full">
+            <label class="form-label" for="modal-project-problem">Problem Solved Statement</label>
+            <input type="text" id="modal-project-problem" class="form-input" placeholder="e.g. Eliminates static resume screening bottlenecks via conversational AI">
+          </div>
+
+          <div class="form-group form-grid-full">
+            <label class="form-label" for="modal-project-tags">Tech Stack Tags (Comma-separated)</label>
+            <input type="text" id="modal-project-tags" class="form-input" placeholder="Next.js, Node.js, Gemini API, Tailwind CSS">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-project-github">GitHub Repository URL</label>
+            <input type="url" id="modal-project-github" class="form-input" placeholder="https://github.com/...">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-project-demo">Live Demo URL</label>
+            <input type="url" id="modal-project-demo" class="form-input" placeholder="https://... or #">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-project-order">Display Order</label>
+            <input type="number" id="modal-project-order" class="form-input" value="1" min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-project-flag">Featured Badge Label</label>
+            <input type="text" id="modal-project-flag" class="form-input" placeholder="e.g. Flagship AI Project">
+          </div>
+
+          <div class="form-group form-grid-full checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="modal-project-featured">
+              <span>Mark as Featured Flagship Project (Expanded Hero Card)</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="project-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-project">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Experience Modal -->
+  <div id="experience-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3 id="experience-modal-title">Add Experience Entry</h3>
+        <button class="modal-close-btn" data-close-modal="experience-modal">&times;</button>
+      </div>
+      <form id="experience-modal-form">
+        <input type="hidden" id="modal-exp-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="modal-exp-role">Role / Job Title</label>
+            <input type="text" id="modal-exp-role" class="form-input" placeholder="e.g. Operational Head" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-exp-org">Organization / Institution</label>
+            <input type="text" id="modal-exp-org" class="form-input" placeholder="e.g. Flux Community" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-exp-period">Dates / Duration</label>
+            <input type="text" id="modal-exp-period" class="form-input" placeholder="e.g. 2025 – Present" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-exp-bullets">Responsibilities (1 per line)</label>
+            <textarea id="modal-exp-bullets" class="form-input" rows="3" placeholder="Key responsibilities and achievements"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-exp-tags">Skill Tags (Comma-separated)</label>
+            <input type="text" id="modal-exp-tags" class="form-input" placeholder="Hackathon Operations, Leadership, Event Logistics">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-exp-order">Display Order</label>
+            <input type="number" id="modal-exp-order" class="form-input" value="1" min="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="experience-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-experience">Save Experience</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Education Modal -->
+  <div id="education-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3 id="education-modal-title">Add Education Record</h3>
+        <button class="modal-close-btn" data-close-modal="education-modal">&times;</button>
+      </div>
+      <form id="education-modal-form">
+        <input type="hidden" id="modal-edu-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="modal-edu-degree">Degree / Course</label>
+            <input type="text" id="modal-edu-degree" class="form-input" placeholder="e.g. Bachelor of Technology (B.Tech)" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-edu-inst">Institution Name</label>
+            <input type="text" id="modal-edu-inst" class="form-input" placeholder="e.g. Physics Wallah Skills, Lucknow" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-edu-date">Location &amp; Dates</label>
+            <input type="text" id="modal-edu-date" class="form-input" placeholder="e.g. Lucknow, UP • 2025 – 2029" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-edu-cgpa-val">CGPA / Grade (Optional)</label>
+            <input type="text" id="modal-edu-cgpa-val" class="form-input" placeholder="e.g. 8.1 / 10">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-edu-semesters">Semester Details (Optional)</label>
+            <input type="text" id="modal-edu-semesters" class="form-input" placeholder="e.g. Semester 1: 7.4 | Semester 2: 8.73">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-edu-desc">Description</label>
+            <textarea id="modal-edu-desc" class="form-input" rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-edu-tags">Key Coursework Tags (Comma-separated)</label>
+            <input type="text" id="modal-edu-tags" class="form-input" placeholder="Data Structures, DBMS, AI Systems">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-edu-order">Display Order</label>
+            <input type="number" id="modal-edu-order" class="form-input" value="1" min="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="education-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-education">Save Education</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Achievement Modal -->
+  <div id="achievement-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3 id="achievement-modal-title">Add Achievement Record</h3>
+        <button class="modal-close-btn" data-close-modal="achievement-modal">&times;</button>
+      </div>
+      <form id="achievement-modal-form">
+        <input type="hidden" id="modal-ach-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="modal-ach-title">Achievement Title</label>
+            <input type="text" id="modal-ach-title" class="form-input" placeholder="e.g. Sports Honors & Championships" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-ach-emoji">Emoji Icon</label>
+            <input type="text" id="modal-ach-emoji" class="form-input" placeholder="e.g. 🥇, 🎙️, 🚀" value="🏆">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-ach-badge">Category Badge</label>
+            <input type="text" id="modal-ach-badge" class="form-input" placeholder="e.g. Athletic Excellence">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-ach-desc">Overview Intro</label>
+            <input type="text" id="modal-ach-desc" class="form-input" placeholder="Brief summary">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-ach-items">Accomplishment Items (1 per line)</label>
+            <textarea id="modal-ach-items" class="form-input" rows="3" placeholder="Gold Medalist - College Badminton..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-ach-order">Display Order</label>
+            <input type="number" id="modal-ach-order" class="form-input" value="1" min="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="achievement-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-achievement">Save Achievement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3 id="profile-modal-title">Add Coding Profile</h3>
+        <button class="modal-close-btn" data-close-modal="profile-modal">&times;</button>
+      </div>
+      <form id="profile-modal-form">
+        <input type="hidden" id="modal-cp-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="modal-cp-platform">Platform Name</label>
+            <input type="text" id="modal-cp-platform" class="form-input" placeholder="e.g. LeetCode, GitHub, CodeChef" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-cp-user">Username / Handle</label>
+            <input type="text" id="modal-cp-user" class="form-input" placeholder="e.g. @workforshivam065" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-cp-url">Profile URL</label>
+            <input type="url" id="modal-cp-url" class="form-input" placeholder="https://..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-cp-order">Display Order</label>
+            <input type="number" id="modal-cp-order" class="form-input" value="1" min="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="profile-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-coding-profile">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global Delete Confirmation Modal -->
+  <div id="delete-confirm-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-card modal-sm">
+      <div class="modal-header">
+        <h3 class="text-danger">Confirm Deletion</h3>
+        <button class="modal-close-btn" data-close-modal="delete-confirm-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="delete-confirm-message">Are you sure you want to permanently delete this item? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close-modal="delete-confirm-modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete Permanently</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase Config Setup Modal (Accessible anytime from login or header) -->
+  <div id="supabase-config-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3>Supabase Project Credentials</h3>
+        <button class="modal-close-btn" data-close-modal="supabase-config-modal">&times;</button>
+      </div>
+      <form id="modal-supabase-config-form">
+        <div class="modal-body">
+          <p class="text-secondary font-sm" style="margin-bottom: 1.2rem;">
+            Enter your Supabase project credentials. These are securely saved in your local browser storage to communicate with your database and storage buckets.
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="setup-modal-url">Supabase Project URL</label>
+            <input type="url" id="setup-modal-url" class="form-input font-mono" placeholder="https://xyzcompany.supabase.co" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="setup-modal-key">Supabase Anon Key (Public)</label>
+            <input type="text" id="setup-modal-key" class="form-input font-mono" placeholder="eyJhbGci..." required>
+          </div>
+          <div id="setup-modal-status" class="alert-box alert-info" style="display:none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="supabase-config-modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" id="btn-modal-test-conn">Test Connection</button>
+          <button type="submit" class="btn btn-primary">Save &amp; Connect</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="admin-toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Admin JavaScript -->
+  <script src="admin.js"></script>
+</body>
+</html>

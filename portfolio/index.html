@@ -9,18 +9,18 @@
   <meta name="robots" content="index, follow">
   
   <!-- Canonical URL -->
-  <link rel="canonical" href="https://shivamsingh.github.io/">
+  <link rel="canonical" href="https://workforshivam065-bot.github.io/portfolio/portfolio/">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://shivamsingh.github.io/">
+  <meta property="og:url" content="https://workforshivam065-bot.github.io/portfolio/portfolio/">
   <meta property="og:title" content="Shivam Singh | B.Tech CSE Student, AI & Full-Stack Developer">
   <meta property="og:description" content="Personal portfolio website of Shivam Singh. CSE Student at Physics Wallah Skills, Lucknow. AI Systems, RAG, Next.js, Node.js, C++, Java developer.">
   <meta property="og:image" content="profile.png">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://shivamsingh.github.io/">
+  <meta property="twitter:url" content="https://workforshivam065-bot.github.io/portfolio/portfolio/">
   <meta property="twitter:title" content="Shivam Singh | B.Tech CSE Student, AI & Full-Stack Developer">
   <meta property="twitter:description" content="Personal portfolio website of Shivam Singh. CSE Student at Physics Wallah Skills, Lucknow. AI Systems, RAG, Next.js, Node.js, C++, Java developer.">
   <meta property="twitter:image" content="profile.png">
@@ -30,54 +30,71 @@
   <!-- Style Sheets -->
   <link rel="stylesheet" href="style.css">
 
+  <!-- Supabase JS Client & Config Manager -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
   <!-- Schema.org JSON-LD Structured Data for SEO -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Shivam Singh",
-    "jobTitle": "B.Tech Computer Science & Engineering Student",
-    "alumniOf": {
-      "@type": "EducationalOrganization",
-      "name": "Physics Wallah Skills, Lucknow, UP"
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Shivam Singh",
+      "jobTitle": "B.Tech Computer Science & Engineering Student",
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Physics Wallah Skills, Lucknow, UP"
+      },
+      "description": "B.Tech CSE Student & Aspiring Software Engineer specializing in AI Systems, RAG Pipelines, Google Gemini API, Full-Stack Development with Next.js, React, Node.js, C, C++, and Java.",
+      "email": "mailto:shivamsingh88442288@gmail.com",
+      "telephone": "+918787216094",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Lucknow",
+        "addressRegion": "Uttar Pradesh",
+        "addressCountry": "India"
+      },
+      "url": "https://workforshivam065-bot.github.io/portfolio/portfolio/",
+      "sameAs": [
+        "https://github.com/workforshivam065-bot",
+        "https://www.linkedin.com/in/shivam-singh-aab283381/?isSelfProfile=true",
+        "https://leetcode.com/u/workforshivam065/"
+      ],
+      "knowsAbout": [
+        "Computer Science",
+        "Artificial Intelligence",
+        "Retrieval-Augmented Generation (RAG)",
+        "Google Gemini API",
+        "Web Speech API",
+        "React JS",
+        "Next.js",
+        "Node.js",
+        "Tailwind CSS",
+        "C",
+        "C++",
+        "Java",
+        "JavaScript",
+        "HTML5",
+        "CSS3",
+        "DBMS",
+        "Git",
+        "GitHub",
+        "Visual Studio Code"
+      ]
     },
-    "description": "B.Tech CSE Student & Aspiring Software Engineer specializing in AI Systems, RAG Pipelines, Google Gemini API, Full-Stack Development with Next.js, React, Node.js, C, C++, and Java.",
-    "email": "mailto:shivamsingh88442288@gmail.com",
-    "telephone": "+918787216094",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Lucknow",
-      "addressRegion": "Uttar Pradesh",
-      "addressCountry": "India"
-    },
-    "url": "https://shivamsingh.github.io/",
-    "sameAs": [
-      "https://github.com/workforshivam065-bot",
-      "https://www.linkedin.com/in/shivam-singh-aab283381/?isSelfProfile=true",
-      "https://leetcode.com/u/workforshivam065/"
-    ],
-    "knowsAbout": [
-      "Computer Science",
-      "Artificial Intelligence",
-      "Retrieval-Augmented Generation (RAG)",
-      "Google Gemini API",
-      "Web Speech API",
-      "React JS",
-      "Next.js",
-      "Node.js",
-      "Tailwind CSS",
-      "C",
-      "C++",
-      "Java",
-      "JavaScript",
-      "HTML5",
-      "CSS3",
-      "DBMS",
-      "Git",
-      "GitHub",
-      "Visual Studio Code"
-    ]
-  }
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Shivam Singh Portfolio",
+      "url": "https://workforshivam065-bot.github.io/portfolio/portfolio/",
+      "author": {
+        "@type": "Person",
+        "name": "Shivam Singh"
+      },
+      "description": "Professional developer portfolio of Shivam Singh, featuring AI digital twins, full-stack software systems, and engineering leadership."
+    }
+  ]
   </script>
 </head>
 <body>
@@ -100,6 +117,7 @@
           <li><a href="#achievements" class="nav-link">Achievements</a></li>
           <li><a href="#profiles" class="nav-link">Profiles</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
+          <li><a href="admin.html" class="nav-link nav-admin-link" title="Admin Dashboard">Admin CMS</a></li>
         </ul>
       </nav>
 
@@ -1074,6 +1092,7 @@
         <li><a href="#achievements">Achievements</a></li>
         <li><a href="#profiles">Profiles</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="admin.html">Admin CMS</a></li>
       </ul>
 
       <div class="footer-bottom">

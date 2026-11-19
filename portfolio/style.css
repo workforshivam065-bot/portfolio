@@ -284,6 +284,29 @@ body.light-theme .btn-secondary:hover {
   width: 100%;
 }
 
+.nav-admin-link {
+  color: var(--primary-accent) !important;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  padding: 0.35rem 0.85rem !important;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.nav-admin-link:hover {
+  background: var(--primary-accent);
+  color: #ffffff !important;
+  border-color: var(--primary-accent);
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+  transform: translateY(-1px);
+}
+
+.nav-admin-link::after {
+  display: none !important;
+}
+
 .nav-actions {
   display: flex;
   align-items: center;

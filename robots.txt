@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /portfolio/admin.html
+
+Sitemap: https://workforshivam065-bot.github.io/portfolio/portfolio/sitemap.xml
