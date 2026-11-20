@@ -37,10 +37,12 @@ CREATE TABLE IF NOT EXISTS public.skills (
   category TEXT NOT NULL, -- 'Programming Languages', 'Web Technologies', 'AI & Core Frameworks', 'Databases & Tools', 'Other Technologies'
   name TEXT NOT NULL,
   level INT DEFAULT 85 CHECK (level >= 0 AND level <= 100),
+  proficiency TEXT DEFAULT 'Intermediate', -- 'Beginner', 'Intermediate', 'Advanced'
   icon_svg TEXT,
   display_order INT DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT now()
 );
+ALTER TABLE public.skills ADD COLUMN IF NOT EXISTS proficiency TEXT DEFAULT 'Intermediate';
 
 -- C. FEATURED & ALL PROJECTS
 CREATE TABLE IF NOT EXISTS public.projects (

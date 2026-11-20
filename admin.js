@@ -334,31 +334,30 @@
       return;
     }
 
-    tbody.innerHTML = skills.map(skill => `
-      <tr>
-        <td><strong>${escapeHtml(skill.name)}</strong></td>
-        <td><span class="badge badge-primary">${escapeHtml(skill.category)}</span></td>
-        <td>
-          <div style="display:flex; align-items:center; gap:0.75rem;">
-            <div class="progress-bar-bg" style="width:100px; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
-              <div style="width:${skill.level || 85}%; height:100%; background:var(--primary-accent);"></div>
+    tbody.innerHTML = skills.map(skill => {
+      const prof = skill.proficiency || (skill.level >= 85 ? 'Advanced' : (skill.level >= 70 ? 'Intermediate' : 'Beginner'));
+      const badgeClass = prof === 'Advanced' ? 'skill-badge-advanced' : (prof === 'Intermediate' ? 'skill-badge-intermediate' : 'skill-badge-beginner');
+      return `
+        <tr>
+          <td><strong>${escapeHtml(skill.name)}</strong></td>
+          <td><span class="badge badge-primary">${escapeHtml(skill.category)}</span></td>
+          <td>
+            <span class="skill-badge ${badgeClass}">${prof}</span>
+          </td>
+          <td>${skill.display_order || 1}</td>
+          <td>
+            <div class="action-btns">
+              <button class="table-action-btn" title="Edit Skill" onclick="AdminApp.editSkill('${skill.id}')">
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              </button>
+              <button class="table-action-btn btn-delete" title="Delete Skill" onclick="AdminApp.confirmDelete('skills', '${skill.id}', '${escapeHtml(skill.name)}')">
+                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              </button>
             </div>
-            <span>${skill.level || 85}%</span>
-          </div>
-        </td>
-        <td>${skill.display_order || 1}</td>
-        <td>
-          <div class="action-btns">
-            <button class="table-action-btn" title="Edit Skill" onclick="AdminApp.editSkill('${skill.id}')">
-              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-            </button>
-            <button class="table-action-btn btn-delete" title="Delete Skill" onclick="AdminApp.confirmDelete('skills', '${skill.id}', '${escapeHtml(skill.name)}')">
-              <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-            </button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 
   function openAddSkillModal() {
@@ -366,8 +365,7 @@
     document.getElementById('modal-skill-id').value = '';
     document.getElementById('modal-skill-name').value = '';
     document.getElementById('modal-skill-category').value = currentSkillCategoryFilter !== 'ALL' ? currentSkillCategoryFilter : 'Programming Languages';
-    document.getElementById('modal-skill-level').value = 85;
-    document.getElementById('modal-skill-level-display').textContent = '85%';
+    document.getElementById('modal-skill-proficiency').value = 'Advanced';
     document.getElementById('modal-skill-order').value = (state.data.skills ? state.data.skills.length + 1 : 1);
     openModal('skill-modal');
   }
@@ -376,12 +374,12 @@
     const skill = (state.data.skills || []).find(s => String(s.id) === String(id));
     if (!skill) return;
 
+    const prof = skill.proficiency || (skill.level >= 85 ? 'Advanced' : (skill.level >= 70 ? 'Intermediate' : 'Beginner'));
     document.getElementById('skill-modal-title').textContent = 'Edit Skill: ' + skill.name;
     document.getElementById('modal-skill-id').value = skill.id;
     document.getElementById('modal-skill-name').value = skill.name;
     document.getElementById('modal-skill-category').value = skill.category;
-    document.getElementById('modal-skill-level').value = skill.level || 85;
-    document.getElementById('modal-skill-level-display').textContent = (skill.level || 85) + '%';
+    document.getElementById('modal-skill-proficiency').value = prof;
     document.getElementById('modal-skill-order').value = skill.display_order || 1;
     openModal('skill-modal');
   }
@@ -395,10 +393,12 @@
     }
 
     const id = document.getElementById('modal-skill-id').value;
+    const prof = document.getElementById('modal-skill-proficiency').value;
     const payload = {
       name: document.getElementById('modal-skill-name').value.trim(),
       category: document.getElementById('modal-skill-category').value,
-      level: parseInt(document.getElementById('modal-skill-level').value, 10),
+      proficiency: prof,
+      level: prof === 'Advanced' ? 90 : (prof === 'Intermediate' ? 75 : 55),
       display_order: parseInt(document.getElementById('modal-skill-order').value, 10) || 1
     };
 

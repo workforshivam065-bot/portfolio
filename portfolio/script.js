@@ -160,16 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
-          
-          // Animate progress bars
-          if (entry.target.classList.contains('skills-category')) {
-            const bars = entry.target.querySelectorAll('.progress-bar-fill');
-            bars.forEach(bar => {
-              const targetWidth = bar.getAttribute('data-width');
-              if (targetWidth) bar.style.width = targetWidth;
-            });
-          }
-          
           observer.unobserve(entry.target);
         }
       });
@@ -178,6 +168,54 @@ document.addEventListener('DOMContentLoaded', () => {
     reveals.forEach(element => revealObserver.observe(element));
   }
   initScrollReveals();
+
+  // --- ABOUT SECTION EXPANDABLE DETAILS CONTROLLER ---
+  const aboutExpandBtn = document.getElementById('about-expand-btn');
+  const aboutExpandedDrawer = document.getElementById('about-expanded-drawer');
+
+  if (aboutExpandBtn && aboutExpandedDrawer) {
+    aboutExpandBtn.addEventListener('click', () => {
+      const isExpanded = aboutExpandedDrawer.classList.toggle('is-expanded');
+      aboutExpandBtn.setAttribute('aria-expanded', isExpanded);
+      const btnText = aboutExpandBtn.querySelector('.btn-text');
+      if (btnText) {
+        btnText.textContent = isExpanded ? 'Show Less Details' : 'View Detailed Bio & Leadership';
+      }
+    });
+  }
+
+  // --- SKILLS CATEGORY FILTER TABS CONTROLLER ---
+  function initSkillsFilter() {
+    const filterTabsContainer = document.getElementById('skills-filter-tabs');
+    if (!filterTabsContainer) return;
+
+    filterTabsContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.skills-filter-btn');
+      if (!btn) return;
+
+      const targetFilter = btn.getAttribute('data-filter');
+      const allBtns = filterTabsContainer.querySelectorAll('.skills-filter-btn');
+      allBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+
+      const categories = document.querySelectorAll('.skills-category');
+      categories.forEach(cat => {
+        const catName = cat.getAttribute('data-category');
+        if (targetFilter === 'all' || catName === targetFilter) {
+          cat.style.display = 'flex';
+          cat.style.opacity = '1';
+          cat.style.transform = 'translateY(0)';
+        } else {
+          cat.style.display = 'none';
+        }
+      });
+    });
+  }
+  initSkillsFilter();
 
   // --- CONTACT FORM VALIDATION & HANDLING ---
   const contactForm = document.getElementById('portfolio-contact-form');
@@ -340,6 +378,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Helper: Determine proficiency level & badge class
+  function getProficiencyBadge(skill) {
+    const prof = (skill.proficiency || '').toLowerCase();
+    const level = typeof skill.level === 'number' ? skill.level : 85;
+    if (prof === 'advanced' || (!prof && level >= 85)) {
+      return { label: 'Advanced', cls: 'skill-badge-advanced' };
+    }
+    if (prof === 'intermediate' || (!prof && level >= 70 && level < 85)) {
+      return { label: 'Intermediate', cls: 'skill-badge-intermediate' };
+    }
+    return { label: 'Beginner', cls: 'skill-badge-beginner' };
+  }
+
   // --- Dynamic Skills Renderer ---
   function renderDynamicSkills(skills) {
     const grid = document.querySelector('.skills-grid');
@@ -364,23 +415,29 @@ document.addEventListener('DOMContentLoaded', () => {
     for (const [catName, catSkills] of Object.entries(categories)) {
       const icon = categoryIcons[catName] || categoryIcons['Web Technologies'];
       html += `
-        <article class="skills-category glass-card reveal active">
+        <article class="skills-category glass-card reveal active" data-category="${escapeHtml(catName)}">
           <div class="skills-category-header">
-            ${icon}
-            <h3>${escapeHtml(catName)}</h3>
+            <div class="category-icon-box">
+              ${icon}
+            </div>
+            <div class="category-meta">
+              <h3>${escapeHtml(catName)}</h3>
+              <span class="category-count">${catSkills.length} Skills</span>
+            </div>
           </div>
           <div class="skills-list">
-            ${catSkills.map(s => `
-              <div class="skill-item">
-                <div class="skill-info">
-                  <span class="skill-name">${escapeHtml(s.name)}</span>
-                  <span class="skill-level">${s.level || 85}%</span>
+            ${catSkills.map(s => {
+              const badge = getProficiencyBadge(s);
+              return `
+                <div class="skill-item">
+                  <div class="skill-main">
+                    <span class="skill-dot"></span>
+                    <span class="skill-name">${escapeHtml(s.name)}</span>
+                  </div>
+                  <span class="skill-badge ${badge.cls}">${badge.label}</span>
                 </div>
-                <div class="progress-bar-bg">
-                  <div class="progress-bar-fill" data-width="${s.level || 85}%" style="width: ${s.level || 85}%"></div>
-                </div>
-              </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         </article>
       `;

@@ -143,20 +143,20 @@
       resume_url: 'https://drive.google.com/file/d/1cbHPIxeLpHI-0Q1UfT000r-VoJKPw0hQ/view?usp=sharing'
     },
     skills: [
-      { id: '1', category: 'Programming Languages', name: 'C++', level: 90, display_order: 1 },
-      { id: '2', category: 'Programming Languages', name: 'Java', level: 85, display_order: 2 },
-      { id: '3', category: 'Programming Languages', name: 'JavaScript', level: 90, display_order: 3 },
-      { id: '4', category: 'Programming Languages', name: 'C', level: 85, display_order: 4 },
-      { id: '5', category: 'Web Technologies', name: 'React JS & Next.js', level: 90, display_order: 1 },
-      { id: '6', category: 'Web Technologies', name: 'Node.js', level: 85, display_order: 2 },
-      { id: '7', category: 'Web Technologies', name: 'Tailwind CSS', level: 92, display_order: 3 },
-      { id: '8', category: 'Web Technologies', name: 'HTML5 & CSS3', level: 95, display_order: 4 },
-      { id: '9', category: 'AI & Core Frameworks', name: 'Google Gemini API', level: 92, display_order: 1 },
-      { id: '10', category: 'AI & Core Frameworks', name: 'RAG (Retrieval-Augmented Gen)', level: 88, display_order: 2 },
-      { id: '11', category: 'AI & Core Frameworks', name: 'HTML5 Web Speech API', level: 85, display_order: 3 },
-      { id: '12', category: 'Databases & Tools', name: 'DBMS & SQL', level: 88, display_order: 1 },
-      { id: '13', category: 'Databases & Tools', name: 'Git & GitHub', level: 92, display_order: 2 },
-      { id: '14', category: 'Databases & Tools', name: 'Visual Studio Code', level: 95, display_order: 3 }
+      { id: '1', category: 'Programming Languages', name: 'C++', level: 90, proficiency: 'Advanced', display_order: 1 },
+      { id: '2', category: 'Programming Languages', name: 'Java', level: 80, proficiency: 'Intermediate', display_order: 2 },
+      { id: '3', category: 'Programming Languages', name: 'JavaScript', level: 90, proficiency: 'Advanced', display_order: 3 },
+      { id: '4', category: 'Programming Languages', name: 'C', level: 80, proficiency: 'Intermediate', display_order: 4 },
+      { id: '5', category: 'Web Technologies', name: 'React JS & Next.js', level: 90, proficiency: 'Advanced', display_order: 1 },
+      { id: '6', category: 'Web Technologies', name: 'Node.js', level: 80, proficiency: 'Intermediate', display_order: 2 },
+      { id: '7', category: 'Web Technologies', name: 'Tailwind CSS', level: 92, proficiency: 'Advanced', display_order: 3 },
+      { id: '8', category: 'Web Technologies', name: 'HTML5 & CSS3', level: 95, proficiency: 'Advanced', display_order: 4 },
+      { id: '9', category: 'AI & Core Frameworks', name: 'Google Gemini API', level: 92, proficiency: 'Advanced', display_order: 1 },
+      { id: '10', category: 'AI & Core Frameworks', name: 'RAG (Retrieval-Augmented Gen)', level: 82, proficiency: 'Intermediate', display_order: 2 },
+      { id: '11', category: 'AI & Core Frameworks', name: 'HTML5 Web Speech API', level: 80, proficiency: 'Intermediate', display_order: 3 },
+      { id: '12', category: 'Databases & Tools', name: 'DBMS & SQL', level: 80, proficiency: 'Intermediate', display_order: 1 },
+      { id: '13', category: 'Databases & Tools', name: 'Git & GitHub', level: 92, proficiency: 'Advanced', display_order: 2 },
+      { id: '14', category: 'Databases & Tools', name: 'Visual Studio Code', level: 95, proficiency: 'Advanced', display_order: 3 }
     ],
     projects: [
       {

@@ -438,7 +438,7 @@
                   <tr>
                     <th>Skill Name</th>
                     <th>Category</th>
-                    <th>Proficiency</th>
+                    <th>Proficiency Level</th>
                     <th>Display Order</th>
                     <th class="text-right">Actions</th>
                   </tr>
@@ -754,11 +754,12 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">
-              <span>Proficiency Level:</span>
-              <strong id="modal-skill-level-display">85%</strong>
-            </label>
-            <input type="range" id="modal-skill-level" min="10" max="100" value="85" class="form-range" oninput="document.getElementById('modal-skill-level-display').innerText = this.value + '%'">
+            <label class="form-label" for="modal-skill-proficiency">Proficiency Level</label>
+            <select id="modal-skill-proficiency" class="form-input" required>
+              <option value="Advanced">Advanced (Core Strengths &amp; Production Expertise)</option>
+              <option value="Intermediate">Intermediate (Comfortable Building &amp; Developing)</option>
+              <option value="Beginner">Beginner (Foundational &amp; Exploring)</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="modal-skill-order">Display Order Priority</label>
